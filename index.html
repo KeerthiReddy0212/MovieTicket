@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MovieTickets | Book Your Movie</title>
+  <style>
+    :root { --red: #f52f43; --navy: #101a29; --muted: #64748b; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #111827; background: #f4f7fb; }
+    header { background: #0d1623; color: #fff; padding: 18px 6%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .logo { font-size: 25px; font-weight: 800; white-space: nowrap; }
+    .logo span { color: var(--red); }
+    nav { display: flex; gap: 28px; align-items: center; }
+    nav a { color: #d6deea; text-decoration: none; font-size: 14px; }
+    nav a:hover { color: #fff; }
+    .header-actions { display: flex; gap: 10px; }
+    button { border: 0; border-radius: 9px; cursor: pointer; font-weight: 700; }
+    .login { padding: 10px 17px; background: transparent; border: 1px solid #8792a2; color: white; }
+    .signup { padding: 10px 17px; background: var(--red); color: white; }
+    .hero { min-height: 330px; padding: 52px 6% 40px; color: white; background: linear-gradient(90deg, rgba(5,9,17,.96), rgba(5,9,17,.72), rgba(5,9,17,.22)), radial-gradient(ellipse at 80% 35%, #7c241b 0, #28101a 35%, #080d16 76%); }
+    .hero-content { max-width: 720px; }
+    .hero h1 { font-size: clamp(36px, 5vw, 56px); line-height: 1.06; margin: 0 0 14px; }
+    .hero h1 span { color: var(--red); }
+    .hero p { max-width: 520px; color: #e3e7ee; font-size: 17px; line-height: 1.6; margin: 0 0 24px; }
+    .search-panel { display: grid; grid-template-columns: 1.25fr 1fr 1fr auto; gap: 10px; padding: 12px; max-width: 1040px; border-radius: 12px; background: #fff; box-shadow: 0 10px 35px #0003; }
+    .search-panel input, .search-panel select { min-width: 0; width: 100%; padding: 14px 12px; border: 1px solid #dce3ec; border-radius: 8px; background: white; color: #334155; font-size: 14px; }
+    .search-panel button { padding: 0 28px; color: white; background: var(--red); font-size: 15px; }
+    main { padding: 32px 6% 38px; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-heading h2 { margin: 0; font-size: 29px; }
+    .section-heading a { color: var(--red); text-decoration: none; font-weight: 700; }
+    .movie-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+    .movie-card { background: #fff; border-radius: 11px; overflow: hidden; box-shadow: 0 5px 15px #14203312; transition: transform .2s, box-shadow .2s; }
+    .movie-card:hover { transform: translateY(-4px); box-shadow: 0 12px 25px #14203320; }
+    .poster { position: relative; height: 265px; display: flex; align-items: end; padding: 16px; color: white; background: linear-gradient(160deg, #39205d, #111827 60%, #6b1d36); }
+    .poster::before { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, #050914bb, transparent 70%); }
+    .poster-title { position: relative; z-index: 1; font-size: 23px; line-height: 1.05; font-weight: 900; text-shadow: 0 2px 6px #000; }
+    .poster.inception { background: linear-gradient(145deg, #0c5268, #10233e 55%, #0a0c15); }
+    .poster.interstellar { background: linear-gradient(145deg, #d9e4e9, #607c8c 45%, #182a40); }
+    .poster.batman { background: linear-gradient(145deg, #f05b19, #541a16 55%, #101018); }
+    .poster.spider { background: linear-gradient(145deg, #b51f32, #163c70 55%, #101523); }
+    .rating { position: absolute; z-index: 2; top: 12px; left: 12px; background: #080d18c9; padding: 7px 9px; border-radius: 6px; font-size: 13px; }
+    .rating b { color: #ffd447; }
+    .movie-info { padding: 13px 14px 15px; }
+    .movie-info h3 { font-size: 16px; margin: 0 0 7px; }
+    .genre, .duration { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+    .book-btn { width: 100%; padding: 11px 8px; margin-top: 7px; color: white; background: var(--red); }
+    .book-btn:hover, .signup:hover, .search-panel button:hover { background: #d91e33; }
+    footer { padding: 22px 6%; background: #101a29; color: #cbd5e1; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 13px; }
+    footer a { color: #cbd5e1; text-decoration: none; margin-left: 18px; }
+    .notice { margin: 18px 0 0; color: #475569; font-size: 13px; }
+    @media (max-width: 1100px) { .movie-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .poster { height: 300px; } }
+    @media (max-width: 760px) { header { flex-wrap: wrap; } nav { order: 3; width: 100%; justify-content: center; gap: 20px; } .hero { padding-top: 38px; } .search-panel { grid-template-columns: 1fr 1fr; } .search-panel button { min-height: 46px; } .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .poster { height: 250px; } footer { flex-direction: column; align-items: flex-start; } footer a { margin: 0 14px 0 0; } }
+    @media (max-width: 430px) { .movie-grid { grid-template-columns: 1fr; } .poster { height: 320px; } .search-panel { grid-template-columns: 1fr; } .header-actions { margin-left: auto; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">🎟 Movie<span>Tickets</span></div>
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a><a href="#movies">Movies</a><a href="#bookings" onclick="showNotice('Your bookings will appear here after booking is connected.')">My Bookings</a>
+    </nav>
+    <div class="header-actions"><button class="login" onclick="showNotice('Login functionality can be connected to your backend.')">Login</button><button class="signup" onclick="showNotice('Sign-up functionality can be connected to your backend.')">Sign Up</button></div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Book Your<br><span>Movie Tickets</span></h1>
+      <p>Discover the latest movies, find showtimes, and book your seats in just a few clicks.</p>
+    </div>
+    <form class="search-panel" id="searchForm">
+      <input id="movieSearch" type="search" placeholder="Search for movies..." aria-label="Search for movies" />
+      <select id="citySelect" aria-label="Select city"><option value="">Select City</option><option>Hyderabad</option><option>Bengaluru</option><option>Chennai</option><option>Mumbai</option><option>Delhi</option><option>Visakhapatnam</option></select>
+      <input id="dateSelect" type="date" aria-label="Select date" />
+      <button type="submit">Search</button>
+    </form>
+  </section>
+
+  <main id="movies">
+    <div class="section-heading"><h2>Now Showing</h2><a href="#movies" id="viewAll">View All ›</a></div>
+    <div class="movie-grid" id="movieGrid">
+      <article class="movie-card" data-title="avengers endgame" data-genre="action adventure sci-fi">
+        <div class="poster"><span class="rating"><b>★</b> 8.4</span><div class="poster-title">AVENGERS<br>ENDGAME</div></div>
+        <div class="movie-info"><h3>Avengers: Endgame</h3><p class="genre">Action | Adventure | Sci-Fi</p><p class="duration">◷ 3h 1m</p><button class="book-btn" onclick="bookMovie('Avengers: Endgame')">Book Now</button></div>
+      </article>
+      <article class="movie-card" data-title="inception" data-genre="action mystery sci-fi">
+        <div class="poster inception"><span class="rating"><b>★</b> 8.8</span><div class="poster-title">INCEPTION</div></div>
+        <div class="movie-info"><h3>Inception</h3><p class="genre">Action | Mystery | Sci-Fi</p><p class="duration">◷ 2h 28m</p><button class="book-btn" onclick="bookMovie('Inception')">Book Now</button></div>
+      </article>
+      <article class="movie-card" data-title="interstellar" data-genre="drama sci-fi adventure">
+        <div class="poster interstellar"><span class="rating"><b>★</b> 8.6</span><div class="poster-title">INTERSTELLAR</div></div>
+        <div class="movie-info"><h3>Interstellar</h3><p class="genre">Drama | Sci-Fi | Adventure</p><p class="duration">◷ 2h 49m</p><button class="book-btn" onclick="bookMovie('Interstellar')">Book Now</button></div>
+      </article>
+      <article class="movie-card" data-title="the batman batman" data-genre="action crime drama">
+        <div class="poster batman"><span class="rating"><b>★</b> 7.8</span><div class="poster-title">THE BATMAN</div></div>
+        <div class="movie-info"><h3>The Batman</h3><p class="genre">Action | Crime | Drama</p><p class="duration">◷ 2h 56m</p><button class="book-btn" onclick="bookMovie('The Batman')">Book Now</button></div>
+      </article>
+      <article class="movie-card" data-title="spider-man no way home spiderman" data-genre="action adventure fantasy">
+        <div class="poster spider"><span class="rating"><b>★</b> 8.2</span><div class="poster-title">SPIDER-MAN<br>NO WAY HOME</div></div>
+        <div class="movie-info"><h3>Spider-Man: No Way Home</h3><p class="genre">Action | Adventure | Fantasy</p><p class="duration">◷ 2h 28m</p><button class="book-btn" onclick="bookMovie('Spider-Man: No Way Home')">Book Now</button></div>
+      </article>
+    </div>
+    <p class="notice" id="notice" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer><div>© 2026 MovieTickets. All rights reserved.</div><div><a href="#about">About Us</a><a href="#terms">Terms &amp; Conditions</a><a href="#privacy">Privacy Policy</a></div></footer>
+
+  <script>
+    const cards = [...document.querySelectorAll('.movie-card')];
+    const notice = document.getElementById('notice');
+    function showNotice(message) { notice.textContent = message; }
+    function bookMovie(title) {
+      const city = document.getElementById('citySelect').value;
+      const date = document.getElementById('dateSelect').value;
+      let message = `You selected ${title}.`;
+      if (city) message += ` City: ${city}.`;
+      if (date) message += ` Date: ${date}.`;
+      message += ' Connect a backend to choose showtimes, seats, and payment.';
+      showNotice(message);
+    }
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const query = document.getElementById('movieSearch').value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach(card => {
+        const matches = !query || card.dataset.title.includes(query) || card.dataset.genre.includes(query);
+        card.style.display = matches ? '' : 'none';
+        if (matches) visible++;
+      });
+      showNotice(visible ? `${visible} movie${visible === 1 ? '' : 's'} found.` : 'No movies found. Try another title or genre.');
+    });
+    document.getElementById('viewAll').addEventListener('click', function() {
+      cards.forEach(card => card.style.display = '');
+      showNotice('Showing all movies.');
+    });
+    document.getElementById('dateSelect').min = new Date().toISOString().split('T')[0];
+  </script>
+</body>
+</html>
